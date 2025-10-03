@@ -139,7 +139,26 @@ public Action Command_Votemute(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_votemute <player> [reason]");
+		// If command is from chat and no args, show menu
+		if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
+		{
+			if (IsVoteInProgress())
+			{
+				ReplyToCommand(client, "[SM] %t", "Vote in Progress");
+				return Plugin_Handled;
+			}
+			
+			if (!TestVoteDelay(client))
+			{
+				return Plugin_Handled;
+			}
+			
+			DisplayMuteTargetMenu(client);
+		}
+		else
+		{
+			ReplyToCommand(client, "[SM] Usage: sm_votemute <player> [reason]");
+		}
 		return Plugin_Handled;	
 	}
 	
@@ -289,7 +308,26 @@ public Action Command_Votegag(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_votegag <player> [reason]");
+		// If command is from chat and no args, show menu
+		if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
+		{
+			if (IsVoteInProgress())
+			{
+				ReplyToCommand(client, "[SM] %t", "Vote in Progress");
+				return Plugin_Handled;
+			}
+			
+			if (!TestVoteDelay(client))
+			{
+				return Plugin_Handled;
+			}
+			
+			DisplayGagTargetMenu(client);
+		}
+		else
+		{
+			ReplyToCommand(client, "[SM] Usage: sm_votegag <player> [reason]");
+		}
 		return Plugin_Handled;	
 	}
 	

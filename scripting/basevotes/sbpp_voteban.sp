@@ -141,7 +141,26 @@ public Action Command_Voteban(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_voteban <player> [reason]");
+		// If command is from chat and no args, show menu
+		if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
+		{
+			if (IsVoteInProgress())
+			{
+				ReplyToCommand(client, "[SM] %t", "Vote in Progress");
+				return Plugin_Handled;
+			}
+			
+			if (!TestVoteDelay(client))
+			{
+				return Plugin_Handled;
+			}
+			
+			DisplayBanTargetMenu(client);
+		}
+		else
+		{
+			ReplyToCommand(client, "[SM] Usage: sm_voteban <player> [reason]");
+		}
 		return Plugin_Handled;	
 	}
 	

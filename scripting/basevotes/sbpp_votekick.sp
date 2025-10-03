@@ -139,7 +139,26 @@ public Action Command_Votekick(int client, int args)
 {
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_votekick <player> [reason]");
+		// If command is from chat and no args, show menu
+		if ((GetCmdReplySource() == SM_REPLY_TO_CHAT) && (client != 0))
+		{
+			if (IsVoteInProgress())
+			{
+				ReplyToCommand(client, "[SM] %t", "Vote in Progress");
+				return Plugin_Handled;
+			}
+			
+			if (!TestVoteDelay(client))
+			{
+				return Plugin_Handled;
+			}
+			
+			DisplayKickTargetMenu(client);
+		}
+		else
+		{
+			ReplyToCommand(client, "[SM] Usage: sm_votekick <player> [reason]");
+		}
 		return Plugin_Handled;	
 	}
 	
