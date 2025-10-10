@@ -613,6 +613,34 @@ bool TestVoteDelay(int client)
 	return true;
 }
 
+bool CanVoteTarget(int client, int target, const char[] commandName)
+{
+	bool isPublic = !CheckCommandAccess(client, commandName, 0, true);
+	
+	if (isPublic)
+	{
+		AdminId clientAdmin = GetUserAdmin(client);
+		AdminId targetAdmin = GetUserAdmin(target);
+		
+		if (targetAdmin != INVALID_ADMIN_ID)
+		{
+			if (clientAdmin == INVALID_ADMIN_ID)
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if (!CanUserTarget(client, target))
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 public Action Timer_ChangeMap(Handle timer, DataPack dp)
 {
 	char mapname[PLATFORM_MAX_PATH];

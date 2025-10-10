@@ -127,4 +127,16 @@
 	{
 		"en"			"Start the Vote"
 	}
+	
+	"Muted target"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Muted {2}."
+	}
+	
+	"Gagged target"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Gagged {2}."
+	}
 }

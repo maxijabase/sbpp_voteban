@@ -71,7 +71,7 @@ void DisplayBanTargetMenu(int client)
 	menu.SetTitle(title);
 	menu.ExitBackButton = true;
 	
-	AddTargetsToMenu(menu, client, false, false);
+	AddTargetsToMenu2(menu, client, COMMAND_FILTER_NO_IMMUNITY);
 	
 	menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -123,7 +123,7 @@ public int MenuHandler_Ban(Menu menu, MenuAction action, int param1, int param2)
 		{
 			PrintToChat(param1, "[SM] %t", "Player no longer available");
 		}
-		else if (!CanUserTarget(param1, target))
+		else if (!CanVoteTarget(param1, target, "sm_voteban"))
 		{
 			PrintToChat(param1, "[SM] %t", "Unable to target");
 		}
