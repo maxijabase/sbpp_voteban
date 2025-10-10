@@ -1,6 +1,6 @@
 # SBPP BaseVotes
 
-A fork of SourceMod's Basic Votes plugin designed to integrate with [SourceBans++](https://github.com/sbpp/sourcebans-pp) and [SourceComms++](https://github.com/srcdslab/sourcecomms).
+A fork of SourceMod's Basic Votes plugin designed to integrate with [SourceBans++](https://github.com/sbpp/sourcebans-pp).
 
 ## What is this?
 
