@@ -14,7 +14,7 @@ public Plugin myinfo =
 	name = "[SBPP] Basic Votes",
 	author = "ampere",
 	description = "Fork of SourceMod's Basic Votes plugin to support SourceBans++",
-	version = "1.0",
+	version = "1.1",
 	url = "github.com/maxijabase"
 };
 
@@ -615,19 +615,21 @@ bool TestVoteDelay(int client)
 
 bool CanVoteTarget(int client, int target, const char[] commandName)
 {
+	AdminId clientAdmin = GetUserAdmin(client);
+	AdminId targetAdmin = GetUserAdmin(target);
+	
+	if (clientAdmin == INVALID_ADMIN_ID && targetAdmin == INVALID_ADMIN_ID)
+	{
+		return true;
+	}
+	
 	bool isPublic = !CheckCommandAccess(client, commandName, 0, true);
 	
 	if (isPublic)
 	{
-		AdminId clientAdmin = GetUserAdmin(client);
-		AdminId targetAdmin = GetUserAdmin(target);
-		
-		if (targetAdmin != INVALID_ADMIN_ID)
+		if (targetAdmin != INVALID_ADMIN_ID && clientAdmin == INVALID_ADMIN_ID)
 		{
-			if (clientAdmin == INVALID_ADMIN_ID)
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 	else
