@@ -6,6 +6,7 @@
 #include <sourcebanspp>
 #include <sourcecomms>
 #include <sbpp_basevotes>
+#include <autoexecconfig>
 
 #pragma newdecls required
 
@@ -30,6 +31,8 @@ ConVar g_Cvar_Limits[5] = {null, ...};
 ConVar g_Cvar_Voteban = null;
 ConVar g_Cvar_Votemute = null;
 ConVar g_Cvar_Votegag = null;
+ConVar g_Cvar_RequireReason = null;
+ConVar g_Cvar_ReasonTimeout = null;
 //ConVar g_Cvar_VoteSay = null;
 
 enum VoteType
@@ -55,6 +58,12 @@ int g_voteTarget;		/* Holds the target's user id */
 char g_voteInfo[3][65];	/* Holds the target's name, authid, and IP */
 
 char g_voteArg[256];	/* Used to hold ban/kick reasons or vote questions */
+
+// Reason requirement system
+bool g_bWaitingForReason[MAXPLAYERS + 1];	/* Tracks if player needs to provide reason */
+int g_iReasonTarget[MAXPLAYERS + 1];		/* Target userid for the reason */
+SBPP_VoteType g_eReasonVoteType[MAXPLAYERS + 1];	/* Type of vote requiring reason */
+Handle g_hReasonTimeout[MAXPLAYERS + 1];	/* Timeout timer for reason waiting */
 
 // Global forwards
 GlobalForward g_hFwd_OnVoteInitiated;
@@ -93,24 +102,22 @@ public void OnPluginStart()
 	RegAdminCmd("sm_votegag", Command_Votegag, ADMFLAG_VOTE|ADMFLAG_CHAT, "sm_votegag <player> [reason]");
 	RegAdminCmd("sm_vote", Command_Vote, ADMFLAG_VOTE, "sm_vote <question> [Answer1] [Answer2] ... [Answer5]");
 
-	/*
-	g_Cvar_Show = FindConVar("sm_vote_show");
-	if (g_Cvar_Show == null)
-	{
-		g_Cvar_Show = CreateConVar("sm_vote_show", "1", "Show player's votes? Default on.", 0, true, 0.0, true, 1.0);
-	}
-	*/
+	AutoExecConfig_SetCreateFile(true);
+	AutoExecConfig_SetFile("basevotes");
 
-	g_Cvar_Limits[0] = CreateConVar("sm_vote_map", "0.60", "percent required for successful map vote.", 0, true, 0.05, true, 1.0);
-	g_Cvar_Limits[1] = CreateConVar("sm_vote_kick", "0.60", "percent required for successful kick vote.", 0, true, 0.05, true, 1.0);	
-	g_Cvar_Limits[2] = CreateConVar("sm_vote_ban", "0.60", "percent required for successful ban vote.", 0, true, 0.05, true, 1.0);
-	g_Cvar_Limits[3] = CreateConVar("sm_vote_mute", "0.60", "percent required for successful mute vote.", 0, true, 0.05, true, 1.0);
-	g_Cvar_Limits[4] = CreateConVar("sm_vote_gag", "0.60", "percent required for successful gag vote.", 0, true, 0.05, true, 1.0);
-	g_Cvar_Voteban = CreateConVar("sm_voteban_time", "30", "length of ban in minutes.", 0, true, 0.0);
-	g_Cvar_Votemute = CreateConVar("sm_votemute_time", "30", "length of mute in minutes.", 0, true, 0.0);
-	g_Cvar_Votegag = CreateConVar("sm_votegag_time", "30", "length of gag in minutes.", 0, true, 0.0);	
+	g_Cvar_Limits[0] = AutoExecConfig_CreateConVar("sm_vote_map", "0.60", "percent required for successful map vote.", 0, true, 0.05, true, 1.0);
+	g_Cvar_Limits[1] = AutoExecConfig_CreateConVar("sm_vote_kick", "0.60", "percent required for successful kick vote.", 0, true, 0.05, true, 1.0);	
+	g_Cvar_Limits[2] = AutoExecConfig_CreateConVar("sm_vote_ban", "0.60", "percent required for successful ban vote.", 0, true, 0.05, true, 1.0);
+	g_Cvar_Limits[3] = AutoExecConfig_CreateConVar("sm_vote_mute", "0.60", "percent required for successful mute vote.", 0, true, 0.05, true, 1.0);
+	g_Cvar_Limits[4] = AutoExecConfig_CreateConVar("sm_vote_gag", "0.60", "percent required for successful gag vote.", 0, true, 0.05, true, 1.0);
+	g_Cvar_Voteban = AutoExecConfig_CreateConVar("sm_voteban_time", "30", "length of ban in minutes.", 0, true, 0.0);
+	g_Cvar_Votemute = AutoExecConfig_CreateConVar("sm_votemute_time", "30", "length of mute in minutes.", 0, true, 0.0);
+	g_Cvar_Votegag = AutoExecConfig_CreateConVar("sm_votegag_time", "30", "length of gag in minutes.", 0, true, 0.0);
+	g_Cvar_RequireReason = AutoExecConfig_CreateConVar("sm_vote_require_reason", "1", "Require players to provide a written reason for voteban/votekick commands.", 0, true, 0.0, true, 1.0);
+	g_Cvar_ReasonTimeout = AutoExecConfig_CreateConVar("sm_vote_reason_timeout", "30", "Timeout in seconds for players to provide a reason for voteban/votekick commands.", 0, true, 5.0, true, 300.0);	
 
-	AutoExecConfig(true, "basevotes");
+	AutoExecConfig_CleanFile();
+	AutoExecConfig_ExecuteFile();
 	
 	/* Account for late loading */
 	TopMenu topmenu;
@@ -176,6 +183,53 @@ public void OnAllPluginsLoaded()
 	}
 	
 	g_mapCount = LoadMapList(g_MapList);
+}
+
+public void OnClientDisconnect(int client)
+{
+	// Clear reason waiting state when player disconnects
+	ClearReasonWaiting(client);
+}
+
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
+{
+	// Check if this player is waiting to provide a reason
+	if (g_bWaitingForReason[client] && IsClientInGame(client))
+	{
+		// Get the target player
+		int target = GetClientOfUserId(g_iReasonTarget[client]);
+		
+		// Check if target is still valid
+		if (target == 0)
+		{
+			PrintToChat(client, "[SM] %t", "Player no longer available");
+			ClearReasonWaiting(client);
+			return Plugin_Handled;
+		}
+		
+		// Store the reason and proceed with the vote
+		strcopy(g_voteArg, sizeof(g_voteArg), sArgs);
+		
+		// Clear the waiting state
+		ClearReasonWaiting(client);
+		
+		// Proceed with the vote based on type
+		switch (g_eReasonVoteType[client])
+		{
+			case SBPP_VoteType_Ban:
+			{
+				DisplayVoteBanMenu(client, target);
+			}
+			case SBPP_VoteType_Kick:
+			{
+				DisplayVoteKickMenu(client, target);
+			}
+		}
+		
+		return Plugin_Handled;
+	}
+	
+	return Plugin_Continue;
 }
 
 public void OnAdminMenuReady(Handle aTopMenu)
@@ -765,4 +819,36 @@ void Forward_OnVoteActionExecute_Post(SBPP_VoteType voteType, int iTarget, const
 	Call_PushString(sReason);
 	Call_PushCell(iDuration);
 	Call_Finish();
+}
+
+/**
+ * Clears the reason waiting state for a client
+ */
+void ClearReasonWaiting(int client)
+{
+	g_bWaitingForReason[client] = false;
+	g_iReasonTarget[client] = 0;
+	g_eReasonVoteType[client] = SBPP_VoteType_Map;
+	
+	// Clear timeout timer if it exists
+	if (g_hReasonTimeout[client] != null)
+	{
+		KillTimer(g_hReasonTimeout[client]);
+		g_hReasonTimeout[client] = null;
+	}
+}
+
+/**
+ * Timeout timer for reason waiting
+ */
+public Action Timer_ReasonTimeout(Handle timer, int client)
+{
+	if (IsClientInGame(client) && g_bWaitingForReason[client])
+	{
+		PrintToChat(client, "[SM] %t", "Reason timeout");
+		ClearReasonWaiting(client);
+	}
+	
+	g_hReasonTimeout[client] = null;
+	return Plugin_Stop;
 }

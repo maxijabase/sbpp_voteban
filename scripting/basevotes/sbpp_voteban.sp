@@ -96,8 +96,25 @@ public int MenuHandler_Ban(Menu menu, MenuAction action, int param1, int param2)
 		}
 		else
 		{
-			g_voteArg[0] = '\0';
-			DisplayVoteBanMenu(param1, target);
+			// Check if reason requirement is enabled
+			if (g_Cvar_RequireReason.BoolValue)
+			{
+				// Set up reason waiting for menu selection
+				g_bWaitingForReason[param1] = true;
+				g_iReasonTarget[param1] = GetClientUserId(target);
+				g_eReasonVoteType[param1] = SBPP_VoteType_Ban;
+				
+				// Start timeout timer
+				g_hReasonTimeout[param1] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, param1);
+				
+				PrintToChat(param1, "[SM] %t", "Please provide reason for ban vote");
+				PrintToChat(param1, "[SM] %t", "Type your reason in chat");
+			}
+			else
+			{
+				g_voteArg[0] = '\0';
+				DisplayVoteBanMenu(param1, target);
+			}
 		}
 	}
 
@@ -147,15 +164,6 @@ public Action Command_Voteban(int client, int args)
 	
 	int len = BreakString(text, arg, sizeof(arg));
 	
-	if (len != -1)
-	{
-		strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
-	}
-	else
-	{
-		g_voteArg[0] = '\0';
-	}
-	
 	char target_name[MAX_TARGET_LENGTH];
 	int target_list[MAXPLAYERS], target_count;
 	bool tn_is_ml;
@@ -174,7 +182,46 @@ public Action Command_Voteban(int client, int args)
 		return Plugin_Handled;
 	}
 
-	DisplayVoteBanMenu(client, target_list[0]);
+	int target = target_list[0];
+	
+	// Check if reason requirement is enabled
+	if (g_Cvar_RequireReason.BoolValue)
+	{
+		// Check if reason was provided in command
+		if (len != -1 && strlen(text[len]) > 0)
+		{
+			// Reason provided, proceed normally
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+			DisplayVoteBanMenu(client, target);
+		}
+		else
+		{
+			// No reason provided, set up reason waiting
+			g_bWaitingForReason[client] = true;
+			g_iReasonTarget[client] = GetClientUserId(target);
+			g_eReasonVoteType[client] = SBPP_VoteType_Ban;
+			
+			// Start timeout timer
+			g_hReasonTimeout[client] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, client);
+			
+			PrintToChat(client, "[SM] %t", "Please provide reason for ban vote");
+			PrintToChat(client, "[SM] %t", "Type your reason in chat");
+		}
+	}
+	else
+	{
+		// Reason requirement disabled, proceed normally
+		if (len != -1)
+		{
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		}
+		else
+		{
+			g_voteArg[0] = '\0';
+		}
+		
+		DisplayVoteBanMenu(client, target);
+	}
 	
 	return Plugin_Handled;
 }

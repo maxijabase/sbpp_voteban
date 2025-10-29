@@ -94,8 +94,25 @@ public int MenuHandler_Kick(Menu menu, MenuAction action, int param1, int param2
 		}
 		else
 		{
-			g_voteArg[0] = '\0';
-			DisplayVoteKickMenu(param1, target);
+			// Check if reason requirement is enabled
+			if (g_Cvar_RequireReason.BoolValue)
+			{
+				// Set up reason waiting for menu selection
+				g_bWaitingForReason[param1] = true;
+				g_iReasonTarget[param1] = GetClientUserId(target);
+				g_eReasonVoteType[param1] = SBPP_VoteType_Kick;
+				
+				// Start timeout timer
+				g_hReasonTimeout[param1] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, param1);
+				
+				PrintToChat(param1, "[SM] %t", "Please provide reason for kick vote");
+				PrintToChat(param1, "[SM] %t", "Type your reason in chat");
+			}
+			else
+			{
+				g_voteArg[0] = '\0';
+				DisplayVoteKickMenu(param1, target);
+			}
 		}
 	}
 
@@ -151,16 +168,44 @@ public Action Command_Votekick(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	if (len != -1)
+	// Check if reason requirement is enabled
+	if (g_Cvar_RequireReason.BoolValue)
 	{
-		strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		// Check if reason was provided in command
+		if (len != -1 && strlen(text[len]) > 0)
+		{
+			// Reason provided, proceed normally
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+			DisplayVoteKickMenu(client, target);
+		}
+		else
+		{
+			// No reason provided, set up reason waiting
+			g_bWaitingForReason[client] = true;
+			g_iReasonTarget[client] = GetClientUserId(target);
+			g_eReasonVoteType[client] = SBPP_VoteType_Kick;
+			
+			// Start timeout timer
+			g_hReasonTimeout[client] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, client);
+			
+			PrintToChat(client, "[SM] %t", "Please provide reason for kick vote");
+			PrintToChat(client, "[SM] %t", "Type your reason in chat");
+		}
 	}
 	else
 	{
-		g_voteArg[0] = '\0';
+		// Reason requirement disabled, proceed normally
+		if (len != -1)
+		{
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		}
+		else
+		{
+			g_voteArg[0] = '\0';
+		}
+		
+		DisplayVoteKickMenu(client, target);
 	}
-	
-	DisplayVoteKickMenu(client, target);
 	
 	return Plugin_Handled;
 }
