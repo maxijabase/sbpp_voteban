@@ -1,6 +1,7 @@
 void DisplayVoteBanMenu(int client, int target)
 {
 	g_voteTarget = GetClientUserId(target);
+	g_voteInitiator = client;
 
 	GetClientName(target, g_voteInfo[VOTE_NAME], sizeof(g_voteInfo[]));
 	GetClientAuthId(target, AuthId_Steam2, g_voteInfo[VOTE_AUTHID], sizeof(g_voteInfo[]));
@@ -19,7 +20,7 @@ void DisplayVoteBanMenu(int client, int target)
 	g_voteType = VoteType_Ban;
 	
 	g_hVoteMenu = new Menu(Handler_VoteCallback, MENU_ACTIONS_ALL);
-	g_hVoteMenu.SetTitle("Voteban Player");
+	g_hVoteMenu.SetTitle("Vote Action Menu Ban");
 	g_hVoteMenu.AddItem(VOTE_YES, "Yes");
 	g_hVoteMenu.AddItem(VOTE_NO, "No");
 	g_hVoteMenu.ExitButton = false;

@@ -58,6 +58,7 @@ int g_voteTarget;		/* Holds the target's user id */
 char g_voteInfo[3][65];	/* Holds the target's name, authid, and IP */
 
 char g_voteArg[256];	/* Used to hold ban/kick reasons or vote questions */
+int g_voteInitiator;	/* Holds the initiator's client index for vote display */
 
 // Reason requirement system
 bool g_bWaitingForReason[MAXPLAYERS + 1];	/* Tracks if player needs to provide reason */
@@ -208,14 +209,55 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			return Plugin_Handled;
 		}
 		
+		// Check if we can vote against this target
+		char commandName[32];
+		switch (g_eReasonVoteType[client])
+		{
+			case SBPP_VoteType_Ban:
+				strcopy(commandName, sizeof(commandName), "sm_voteban");
+			case SBPP_VoteType_Kick:
+				strcopy(commandName, sizeof(commandName), "sm_votekick");
+			case SBPP_VoteType_Mute:
+				strcopy(commandName, sizeof(commandName), "sm_votemute");
+			case SBPP_VoteType_Gag:
+				strcopy(commandName, sizeof(commandName), "sm_votegag");
+			default:
+				strcopy(commandName, sizeof(commandName), "sm_votekick");
+		}
+		
+		if (!CanVoteTarget(client, target, commandName))
+		{
+			PrintToChat(client, "[SM] %t", "Unable to target");
+			ClearReasonWaiting(client);
+			return Plugin_Handled;
+		}
+		
+		// Check if a vote is already in progress
+		if (IsVoteInProgress())
+		{
+			PrintToChat(client, "[SM] %t", "Vote in Progress");
+			ClearReasonWaiting(client);
+			return Plugin_Handled;
+		}
+		
+		// Check vote delay
+		if (!TestVoteDelay(client))
+		{
+			ClearReasonWaiting(client);
+			return Plugin_Handled;
+		}
+		
 		// Store the reason and proceed with the vote
 		strcopy(g_voteArg, sizeof(g_voteArg), sArgs);
+		
+		// Store the vote type before clearing (important: ClearReasonWaiting resets g_eReasonVoteType)
+		SBPP_VoteType voteType = g_eReasonVoteType[client];
 		
 		// Clear the waiting state
 		ClearReasonWaiting(client);
 		
 		// Proceed with the vote based on type
-		switch (g_eReasonVoteType[client])
+		switch (voteType)
 		{
 			case SBPP_VoteType_Ban:
 			{
@@ -224,6 +266,14 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 			case SBPP_VoteType_Kick:
 			{
 				DisplayVoteKickMenu(client, target);
+			}
+			case SBPP_VoteType_Mute:
+			{
+				DisplayVoteMuteMenu(client, target);
+			}
+			case SBPP_VoteType_Gag:
+			{
+				DisplayVoteGagMenu(client, target);
 			}
 		}
 		
@@ -356,7 +406,26 @@ public int Handler_VoteCallback(Menu menu, MenuAction action, int param1, int pa
 			menu.GetTitle(title, sizeof(title));
 			
 	 		char buffer[255];
-			Format(buffer, sizeof(buffer), "%T", title, param1, g_voteInfo[VOTE_NAME]);
+	 		
+	 		// Check if this is a "Vote Action Menu" translation key (with reason support)
+	 		if (StrContains(title, "Vote Action Menu") != -1)
+	 		{
+				// Format the base vote action line: "{1:N} initiated a [action] vote against {2:s}"
+				Format(buffer, sizeof(buffer), "%T", title, param1, g_voteInitiator, g_voteInfo[VOTE_NAME]);
+				
+				// Append reason line if a reason was provided
+				if (g_voteArg[0] != '\0')
+				{
+					char reasonLine[128];
+					Format(reasonLine, sizeof(reasonLine), "\n%T", "Vote Reason Line", param1, g_voteArg);
+					StrCat(buffer, sizeof(buffer), reasonLine);
+				}
+			}
+			else
+			{
+				// Old format keys (like "Votekick Player", "Voteban Player")
+				Format(buffer, sizeof(buffer), "%T", title, param1, g_voteInfo[VOTE_NAME]);
+			}
 
 			Panel panel = view_as<Panel>(param2);
 			panel.SetTitle(buffer);

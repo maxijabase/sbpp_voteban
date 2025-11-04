@@ -1,6 +1,7 @@
 void DisplayVoteKickMenu(int client, int target)
 {
 	g_voteTarget = GetClientUserId(target);
+	g_voteInitiator = client;
 
 	GetClientName(target, g_voteInfo[VOTE_NAME], sizeof(g_voteInfo[]));
 
@@ -17,7 +18,7 @@ void DisplayVoteKickMenu(int client, int target)
 	g_voteType = VoteType_Kick;
 	
 	g_hVoteMenu = new Menu(Handler_VoteCallback, MENU_ACTIONS_ALL);
-	g_hVoteMenu.SetTitle("Votekick Player");
+	g_hVoteMenu.SetTitle("Vote Action Menu Kick");
 	g_hVoteMenu.AddItem(VOTE_YES, "Yes");
 	g_hVoteMenu.AddItem(VOTE_NO, "No");
 	g_hVoteMenu.ExitButton = false;

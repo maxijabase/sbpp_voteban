@@ -1,6 +1,7 @@
 void DisplayVoteMuteMenu(int client, int target)
 {
 	g_voteTarget = GetClientUserId(target);
+	g_voteInitiator = client;
 
 	GetClientName(target, g_voteInfo[VOTE_NAME], sizeof(g_voteInfo[]));
 
@@ -17,7 +18,7 @@ void DisplayVoteMuteMenu(int client, int target)
 	g_voteType = VoteType_Mute;
 	
 	g_hVoteMenu = new Menu(Handler_VoteCallback, MENU_ACTIONS_ALL);
-	g_hVoteMenu.SetTitle("Votemute Player", g_voteInfo[VOTE_NAME]);
+	g_hVoteMenu.SetTitle("Vote Action Menu Mute");
 	g_hVoteMenu.AddItem(VOTE_YES, "Yes");
 	g_hVoteMenu.AddItem(VOTE_NO, "No");
 	g_hVoteMenu.ExitButton = false;
@@ -94,8 +95,24 @@ public int MenuHandler_Mute(Menu menu, MenuAction action, int param1, int param2
 		}
 		else
 		{
-			g_voteArg[0] = '\0';
-			DisplayVoteMuteMenu(param1, target);
+			// Check if reason requirement is enabled
+			if (g_Cvar_RequireReason.BoolValue)
+			{
+				// Set up reason waiting for menu selection
+				g_bWaitingForReason[param1] = true;
+				g_iReasonTarget[param1] = GetClientUserId(target);
+				g_eReasonVoteType[param1] = SBPP_VoteType_Mute;
+				
+				// Start timeout timer
+				g_hReasonTimeout[param1] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, param1);
+				
+				PrintToChat(param1, "[SM] %t", "Vote reason explanation");
+			}
+			else
+			{
+				g_voteArg[0] = '\0';
+				DisplayVoteMuteMenu(param1, target);
+			}
 		}
 	}
 
@@ -151,16 +168,43 @@ public Action Command_Votemute(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	if (len != -1)
+	// Check if reason requirement is enabled
+	if (g_Cvar_RequireReason.BoolValue)
 	{
-		strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		// Check if reason was provided in command
+		if (len != -1 && strlen(text[len]) > 0)
+		{
+			// Reason provided, proceed normally
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+			DisplayVoteMuteMenu(client, target);
+		}
+		else
+		{
+			// No reason provided, set up reason waiting
+			g_bWaitingForReason[client] = true;
+			g_iReasonTarget[client] = GetClientUserId(target);
+			g_eReasonVoteType[client] = SBPP_VoteType_Mute;
+			
+			// Start timeout timer
+			g_hReasonTimeout[client] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, client);
+			
+			PrintToChat(client, "[SM] %t", "Vote reason explanation");
+		}
 	}
 	else
 	{
-		g_voteArg[0] = '\0';
+		// Reason not required
+		if (len != -1)
+		{
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		}
+		else
+		{
+			g_voteArg[0] = '\0';
+		}
+		
+		DisplayVoteMuteMenu(client, target);
 	}
-	
-	DisplayVoteMuteMenu(client, target);
 	
 	return Plugin_Handled;
 }
@@ -170,6 +214,7 @@ public Action Command_Votemute(int client, int args)
 void DisplayVoteGagMenu(int client, int target)
 {
 	g_voteTarget = GetClientUserId(target);
+	g_voteInitiator = client;
 
 	GetClientName(target, g_voteInfo[VOTE_NAME], sizeof(g_voteInfo[]));
 
@@ -186,7 +231,7 @@ void DisplayVoteGagMenu(int client, int target)
 	g_voteType = VoteType_Gag;
 	
 	g_hVoteMenu = new Menu(Handler_VoteCallback, MENU_ACTIONS_ALL);
-	g_hVoteMenu.SetTitle("Votegag Player", g_voteInfo[VOTE_NAME]);
+	g_hVoteMenu.SetTitle("Vote Action Menu Gag");
 	g_hVoteMenu.AddItem(VOTE_YES, "Yes");
 	g_hVoteMenu.AddItem(VOTE_NO, "No");
 	g_hVoteMenu.ExitButton = false;
@@ -263,8 +308,24 @@ public int MenuHandler_Gag(Menu menu, MenuAction action, int param1, int param2)
 		}
 		else
 		{
-			g_voteArg[0] = '\0';
-			DisplayVoteGagMenu(param1, target);
+			// Check if reason requirement is enabled
+			if (g_Cvar_RequireReason.BoolValue)
+			{
+				// Set up reason waiting for menu selection
+				g_bWaitingForReason[param1] = true;
+				g_iReasonTarget[param1] = GetClientUserId(target);
+				g_eReasonVoteType[param1] = SBPP_VoteType_Gag;
+				
+				// Start timeout timer
+				g_hReasonTimeout[param1] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, param1);
+				
+				PrintToChat(param1, "[SM] %t", "Vote reason explanation");
+			}
+			else
+			{
+				g_voteArg[0] = '\0';
+				DisplayVoteGagMenu(param1, target);
+			}
 		}
 	}
 
@@ -320,16 +381,43 @@ public Action Command_Votegag(int client, int args)
 		return Plugin_Handled;
 	}
 	
-	if (len != -1)
+	// Check if reason requirement is enabled
+	if (g_Cvar_RequireReason.BoolValue)
 	{
-		strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		// Check if reason was provided in command
+		if (len != -1 && strlen(text[len]) > 0)
+		{
+			// Reason provided, proceed normally
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+			DisplayVoteGagMenu(client, target);
+		}
+		else
+		{
+			// No reason provided, set up reason waiting
+			g_bWaitingForReason[client] = true;
+			g_iReasonTarget[client] = GetClientUserId(target);
+			g_eReasonVoteType[client] = SBPP_VoteType_Gag;
+			
+			// Start timeout timer
+			g_hReasonTimeout[client] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, client);
+			
+			PrintToChat(client, "[SM] %t", "Vote reason explanation");
+		}
 	}
 	else
 	{
-		g_voteArg[0] = '\0';
+		// Reason not required
+		if (len != -1)
+		{
+			strcopy(g_voteArg, sizeof(g_voteArg), text[len]);
+		}
+		else
+		{
+			g_voteArg[0] = '\0';
+		}
+		
+		DisplayVoteGagMenu(client, target);
 	}
-	
-	DisplayVoteGagMenu(client, target);
 	
 	return Plugin_Handled;
 }

@@ -162,4 +162,39 @@
 		"en"			"Vote canceled: reason input timed out."
 		"es"			"Votación cancelada: tiempo de espera agotado."
 	}
+	
+	"Vote Action Menu Kick"
+	{
+		"#format"		"{1:N},{2:s}"
+		"en"			"{1} initiated a kick vote against {2}"
+		"es"			"{1} inició una votación para kickear a {2}"
+	}
+	
+	"Vote Action Menu Ban"
+	{
+		"#format"		"{1:N},{2:s}"
+		"en"			"{1} initiated a ban vote against {2}"
+		"es"			"{1} inició una votación para banear a {2}"
+	}
+	
+	"Vote Action Menu Mute"
+	{
+		"#format"		"{1:N},{2:s}"
+		"en"			"{1} initiated a mute vote against {2}"
+		"es"			"{1} inició una votación para mutear a {2}"
+	}
+	
+	"Vote Action Menu Gag"
+	{
+		"#format"		"{1:N},{2:s}"
+		"en"			"{1} initiated a gag vote against {2}"
+		"es"			"{1} inició una votación para gagear a {2}"
+	}
+	
+	"Vote Reason Line"
+	{
+		"#format"		"{1:s}"
+		"en"			"Reason: {1}"
+		"es"			"Razón: {1}"
+	}
 }
