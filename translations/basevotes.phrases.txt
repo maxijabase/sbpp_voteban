@@ -17,28 +17,28 @@
 	{
 		"#format"		"{1:s}"
 		"en"			"Initiated a kick vote against {1}."
-		"es"			"Inició una votación de kick contra {1}."
+		"es"			"Inició una votación para kickear a {1}."
 	}
 	
 	"Initiated Vote Ban"
 	{
 		"#format"		"{1:s}"
 		"en"			"Initiated a ban vote against {1}."
-		"es"			"Inició una votación de ban contra {1}."
+		"es"			"Inició una votación para banear a {1}."
 	}
 	
 	"Initiated Vote Mute"
 	{
 		"#format"		"{1:s}"
 		"en"			"Initiated a mute vote against {1}."
-		"es"			"Inició una votación de mute contra {1}."
+		"es"			"Inició una votación para mutear a {1}."
 	}
 	
 	"Initiated Vote Gag"
 	{
 		"#format"		"{1:s}"
 		"en"			"Initiated a gag vote against {1}."
-		"es"			"Inició una votación de gag contra {1}."
+		"es"			"Inició una votación para gagear a {1}."
 	}
 	
 	"Map Vote"
@@ -51,7 +51,7 @@
 	"Map Vote In Use"
 	{
 		"en"			"Another admin is currently using the map vote menu."
-		"es"			"Otro administrador está usando actualmente el menú de votación de mapa."
+		"es"			"Otro admin está usando el menú de votación de mapa."
 	}
 	
 	"Change Map To"
@@ -93,14 +93,14 @@
 	{
 		"#format"		"{1:d},{2:d}"
 		"en"			"Vote successful. (Received {1}%% of {2} votes)"
-		"es"			"Votación exitosa. (Recibidos {1}%% de {2} votos)"
+		"es"			"Votación exitosa. (Recibió {1}%% de {2} votos)"
 	}	
 	
 	"Vote Failed"
 	{
 		"#format"		"{1:d},{2:d},{3:d}"
 		"en"			"Vote failed. {1}%% vote required. (Received {2}%% of {3} votes)"
-		"es"			"Votación fallida. Se requiere {1}%% de votos. (Recibidos {2}%% de {3} votos)"
+		"es"			"Votación fallida. Se requiere {1}%%. (Recibió {2}%% de {3} votos)"
 	}	
 
 	"Vote End"
@@ -120,23 +120,23 @@
 		"en"			"Ban vote"
 		"es"			"Votación de ban"
 	}
-
-	"Map vote"
-	{
-		"en"			"Map vote"
-		"es"			"Votación de mapa"
-	}
-
+	
 	"Mute vote"
 	{
 		"en"			"Mute vote"
 		"es"			"Votación de mute"
 	}
-
+	
 	"Gag vote"
 	{
 		"en"			"Gag vote"
 		"es"			"Votación de gag"
+	}
+
+	"Map vote"
+	{
+		"en"			"Map vote"
+		"es"			"Votación de mapa"
 	}
 
 	"Confirm Vote"
@@ -151,41 +151,15 @@
 		"es"			"Iniciar la Votación"
 	}
 	
-	"Muted target"
+	"Vote reason explanation"
 	{
-		"#format"		"{1:s},{2:s}"
-		"en"			"Muted {2}."
-		"es"			"Muteado a {2}."
-	}
-	
-	"Gagged target"
-	{
-		"#format"		"{1:s},{2:s}"
-		"en"			"Gagged {2}."
-		"es"			"Gageado a {2}."
-	}
-	
-	"Please provide reason for ban vote"
-	{
-		"en"			"Please provide a reason for the ban vote."
-		"es"			"Por favor proporciona una razón para la votación de ban."
-	}
-	
-	"Please provide reason for kick vote"
-	{
-		"en"			"Please provide a reason for the kick vote."
-		"es"			"Por favor proporciona una razón para la votación de kick."
-	}
-	
-	"Type your reason in chat"
-	{
-		"en"			"Type your reason in chat now."
-		"es"			"Escribe tu razón en el chat ahora."
+		"en"			"Please type your reason in chat."
+		"es"			"Por favor escribe tu razón en el chat."
 	}
 	
 	"Reason timeout"
 	{
-		"en"			"Reason timeout. Vote cancelled."
-		"es"			"Tiempo de espera agotado. Votación cancelada."
+		"en"			"Vote canceled: reason input timed out."
+		"es"			"Votación cancelada: tiempo de espera agotado."
 	}
 }

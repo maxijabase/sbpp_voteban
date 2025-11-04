@@ -1,0 +1,80 @@
+"Phrases"
+{
+	"Ban player"
+	{
+		"en"			"Ban player"
+		"es"			"Banear jugador"
+	}
+
+	"Ban reason"
+	{
+		"en"			"Ban reason"
+		"es"			"Razón del baneo"
+	}
+	
+	"Permabanned player"
+	{
+		"#format"		"{1:s}"
+		"en"			"Permanently banned player \"{1}\"."
+		"es"			"Baneado permanentemente al jugador \"{1}\"."
+	}
+	
+	"Permabanned player reason"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Permanently banned player \"{1}\" (reason: {2})."
+		"es"			"Baneado permanentemente al jugador \"{1}\" (razón: {2})."
+	}
+	
+	"Banned player"
+	{
+		"#format"		"{1:s},{2:d}"
+		"en"			"Banned player \"{1}\" for {2} minutes."
+		"es"			"Baneado al jugador \"{1}\" por {2} minutos."
+	}
+	
+	"Banned player reason"
+	{
+		"#format"		"{1:s},{2:d},{3:s}"
+		"en"			"Banned player \"{1}\" for {2} minutes (reason: {3})."
+		"es"			"Baneado al jugador \"{1}\" por {2} minutos (razón: {3})."
+	}
+	
+	"Removed bans matching"
+	{
+		"#format"		"{1:s}"
+		"en"			"Removed bans matching filter: {1}"
+		"es"			"Removidos los baneos que coinciden con el filtro: {1}"
+	}
+	
+	"Ban added"
+	{
+		"en"			"Ban has been added."
+		"es"			"Baneo agregado."
+	}
+	
+	"Cannot ban that IP"
+	{
+		"en"			"You cannot ban that IP address."
+		"es"			"No puedes banear esa dirección IP."
+	}
+	
+	"Custom ban reason explanation"
+	{
+		"#format"		"{1:s}"
+		"en"			"Enter the reason as a chat message. Use {1} to abort this."
+		"es"			"Escribe la razón como un mensaje de chat. Usa {1} para cancelar."
+	}
+	
+	"AbortBan applied successfully"
+	{
+		"en"			"Ban aborted."
+		"es"			"Baneo cancelado."
+	}
+	
+	"AbortBan not waiting for custom reason"
+	{
+		"en"			"Not waiting for a ban reason to be typed in, no ban to abort."
+		"es"			"No se está esperando una razón de baneo, no hay baneo para cancelar."
+	}
+}

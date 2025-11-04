@@ -1,0 +1,181 @@
+"Phrases"
+{
+	"Unable to find cvar"
+	{
+		"#format"		"{1:s}"
+		"en"			"Unable to find cvar: {1}"
+		"es"			"No se pudo encontrar la cvar: {1}"
+	}
+	
+	"No access to cvar"
+	{
+		"en"			"You do not have access to this cvar."
+		"es"			"No tienes acceso a esta cvar."
+	}
+	
+	"Value of cvar"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Value of cvar \"{1}\": \"{2}\""
+		"es"			"Valor de la cvar \"{1}\": \"{2}\""
+	}
+	
+	"Cvar changed"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Changed cvar \"{1}\" to \"{2}\"."
+		"es"			"Cambiada la cvar \"{1}\" a \"{2}\"."
+	}
+	
+	"Config not found"
+	{
+		"#format"		"{1:s}"
+		"en"			"Config file \"{1}\" not found."
+		"es"			"Archivo de configuración \"{1}\" no encontrado."
+	}
+	
+	"Executed config"
+	{
+		"#format"		"{1:s}"
+		"en"			"Executed config \"{1}\"."
+		"es"			"Ejecutado el config \"{1}\"."
+	}
+
+	"Permabanned player"
+	{
+		"#format"		"{1:s}"
+		"en"			"Permanently banned player \"{1}\"."
+		"es"			"Baneado permanentemente al jugador \"{1}\"."
+	}
+	
+	"Permabanned player reason"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Permanently banned player \"{1}\" (reason: {2})."
+		"es"			"Baneado permanentemente al jugador \"{1}\" (razón: {2})."
+	}
+	
+	"Banned player"
+	{
+		"#format"		"{1:s},{2:d}"
+		"en"			"Banned player \"{1}\" for {2} minutes."
+		"es"			"Baneado al jugador \"{1}\" por {2} minutos."
+	}
+	
+	"Banned player reason"
+	{
+		"#format"		"{1:s},{2:d},{3:s}"
+		"en"			"Banned player \"{1}\" for {2} minutes (reason: {3})."
+		"es"			"Baneado al jugador \"{1}\" por {2} minutos (razón: {3})."
+	}
+	
+	"Removed bans matching"
+	{
+		"#format"		"{1:s}"
+		"en"			"Removed bans matching filter: {1}"
+		"es"			"Removidos los baneos que coinciden con el filtro: {1}"
+	}
+	
+	"Ban added"
+	{
+		"en"			"Ban has been added."
+		"es"			"Baneo agregado."
+	}
+	
+	"Admin cache refreshed"
+	{
+		"en"			"Admin cache has been refreshed."
+		"es"			"Caché de administradores actualizado."
+	}
+	
+	"Identify player"
+	{
+		"en"			"Identify player"
+		"es"			"Identificar jugador"
+	}
+	
+	"Choose Map"
+	{
+		"en"			"Choose Map"
+		"es"			"Elegir Mapa"
+	}
+	
+	"Exec CFG"
+	{
+		"en"			"Exec CFG"
+		"es"			"Ejecutar CFG"
+	}
+	
+	"Admin logged in as"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"\"{1}\" is logged in as \"{2}\" with access: {3}"
+		"es"			"\"{1}\" está conectado como \"{2}\" con acceso: {3}"
+	}
+	
+	"Admin logged in anon"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"\"{1}\" has access: {2}"
+		"es"			"\"{1}\" tiene acceso: {2}"
+	}
+	
+	"Player is not an admin"
+	{
+		"#format"		"{1:s}"
+		"en"			"\"{1}\" is not an admin."
+		"es"			"\"{1}\" no es un admin."
+	}
+	
+	"Player is an admin"
+	{
+		"#format"		"{1:s}"
+		"en"			"\"{1}\" is an admin."
+		"es"			"\"{1}\" es un admin."
+	}
+	
+	"Username"
+	{
+		"en"			"Username"
+		"es"			"Nombre de usuario"
+	}
+	
+	"Kicked target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Kicked {1}"
+		"es"			"Kickeado a {1}"
+	}
+
+	"Kicked target reason"
+	{
+		"#format"		"{1:N},{2:s}"
+		"en"			"Kicked {1} (Reason: {2})"
+		"es"			"Kickeado a {1} (Razón: {2})"
+	}
+	
+	"Admin access"
+	{
+		"en"			"Admin access"
+		"es"			"Acceso de admin"
+	}
+	
+	"Cvar is now protected"
+	{
+		"#format"		"{1:s}"
+		"en"			"Cvar {1} is now protected."
+		"es"			"La cvar {1} ahora está protegida."
+	}
+	
+	"Please select a map"
+	{
+		"en"			"Please select a map"
+		"es"			"Por favor selecciona un mapa"
+	}
+	
+	"Choose Config"
+	{
+		"en"			"Choose Config"
+		"es"			"Elegir Configuración"
+	}
+}

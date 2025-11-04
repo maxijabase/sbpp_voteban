@@ -1,0 +1,92 @@
+"Phrases"
+{
+	"Gag/Mute player"
+	{
+		"en"			"Gag/Mute player"
+		"es"			"Gagear/Mutear jugador"
+	}
+	
+	"Choose Type"
+	{
+		"en"			"Choose Type"
+		"es"			"Elegir Tipo"
+	}
+	
+	"Gagged target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Gagged {1}."
+		"es"			"Gageado a {1}."
+	}
+	
+	"Ungagged target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Ungagged {1}."
+		"es"			"Desgageado a{1}."
+	}
+	
+	"Muted target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Muted {1}."
+		"es"			"Muteado a {1}."
+	}
+	
+	"Unmuted target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Unmuted {1}."
+		"es"			"Desmuteado a {1}."
+	}
+	
+	"Silenced target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Silenced {1}."
+		"es"			"Silenciado a {1}."
+	}
+	
+	"Unsilenced target"
+	{
+		"#format"		"{1:N}"
+		"en"			"Unsilenced {1}."
+		"es"			"Dessilenciado a {1}."
+	}
+	
+	"Mute Player"
+	{
+		"en"			"Mute Player"
+		"es"			"Mutear Jugador"
+	}
+	
+	"UnMute Player"
+	{
+		"en"			"UnMute Player"
+		"es"			"Desmutear Jugador"
+	}
+	
+	"Gag Player"
+	{
+		"en"			"Gag Player"
+		"es"			"Gagear Jugador"
+	}
+	
+	"UnGag Player"
+	{
+		"en"			"UnGag Player"
+		"es"			"Desgagear Jugador"
+	}
+	
+	"Silence Player"
+	{
+		"en"			"Silence Player"
+		"es"			"Silenciar Jugador"
+	}
+	
+	"UnSilence Player"
+	{
+		"en"			"UnSilence Player"
+		"es"			"Dessilenciar Jugador"
+	}
+}

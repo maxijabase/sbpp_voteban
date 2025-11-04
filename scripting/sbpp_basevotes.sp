@@ -15,7 +15,7 @@ public Plugin myinfo =
 	name = "[SBPP] Basic Votes",
 	author = "ampere",
 	description = "Fork of SourceMod's Basic Votes plugin to support SourceBans++",
-	version = "1.1",
+	version = "1.2",
 	url = "github.com/maxijabase"
 };
 
@@ -86,6 +86,7 @@ public void OnPluginStart()
 	LoadTranslations("basevotes.phrases");
 	LoadTranslations("plugin.basecommands");
 	LoadTranslations("basebans.phrases");
+	LoadTranslations("basecomm.phrases");
 	
 	// Create global forwards
 	g_hFwd_OnVoteInitiated = new GlobalForward("SBPP_OnVoteInitiated", ET_Event, Param_Cell, Param_Cell, Param_Cell, Param_String, Param_String);
@@ -475,7 +476,7 @@ public int Handler_VoteCallback(Menu menu, MenuAction action, int param1, int pa
 						
 						if (result == Plugin_Continue)
 						{
-							PrintToChatAll("[SM] %t", "Kicked target", "_s", g_voteInfo[VOTE_NAME]);					
+							PrintToChatAll("[SM] %t", "Kicked target", voteTarget);					
 							LogAction(-1, voteTarget, "Vote kick successful, kicked \"%L\" (reason \"%s\")", voteTarget, g_voteArg);
 							
 							ServerCommand("kickid %d \"%s\"", g_voteTarget, g_voteArg);
@@ -568,7 +569,7 @@ public int Handler_VoteCallback(Menu menu, MenuAction action, int param1, int pa
 						if (result == Plugin_Continue)
 						{
 							LogAction(-1, voteTarget, "Vote mute successful, muted \"%L\" (minutes \"%d\") (reason \"%s\")", voteTarget, minutes, g_voteArg);
-							PrintToChatAll("[SM] %t", "Muted target", "_s", g_voteInfo[VOTE_NAME]);
+							PrintToChatAll("[SM] %t", "Muted target", voteTarget);
 							
 							// Use SourceComms to mute the player
 							SourceComms_SetClientMute(voteTarget, true, minutes, true, g_voteArg);
@@ -610,7 +611,7 @@ public int Handler_VoteCallback(Menu menu, MenuAction action, int param1, int pa
 						if (result == Plugin_Continue)
 						{
 							LogAction(-1, voteTarget, "Vote gag successful, gagged \"%L\" (minutes \"%d\") (reason \"%s\")", voteTarget, minutes, g_voteArg);
-							PrintToChatAll("[SM] %t", "Gagged target", "_s", g_voteInfo[VOTE_NAME]);
+							PrintToChatAll("[SM] %t", "Gagged target", voteTarget);
 							
 							// Use SourceComms to gag the player
 							SourceComms_SetClientGag(voteTarget, true, minutes, true, g_voteArg);

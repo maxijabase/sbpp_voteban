@@ -107,8 +107,7 @@ public int MenuHandler_Ban(Menu menu, MenuAction action, int param1, int param2)
 				// Start timeout timer
 				g_hReasonTimeout[param1] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, param1);
 				
-				PrintToChat(param1, "[SM] %t", "Please provide reason for ban vote");
-				PrintToChat(param1, "[SM] %t", "Type your reason in chat");
+				PrintToChat(param1, "[SM] %t", "Vote reason explanation");
 			}
 			else
 			{
@@ -204,8 +203,7 @@ public Action Command_Voteban(int client, int args)
 			// Start timeout timer
 			g_hReasonTimeout[client] = CreateTimer(g_Cvar_ReasonTimeout.FloatValue, Timer_ReasonTimeout, client);
 			
-			PrintToChat(client, "[SM] %t", "Please provide reason for ban vote");
-			PrintToChat(client, "[SM] %t", "Type your reason in chat");
+			PrintToChat(client, "[SM] %t", "Vote reason explanation");
 		}
 	}
 	else
