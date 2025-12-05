@@ -182,6 +182,8 @@ public void OnAllPluginsLoaded()
 		{
 			LogMessage("Stock basevotes.smx was unloaded and moved to plugins/disabled/basevotes.smx");
 		}
+
+		RegPluginLibrary("sbpp_basevotes");
 	}
 	
 	g_mapCount = LoadMapList(g_MapList);
